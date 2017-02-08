@@ -18,19 +18,17 @@
 </head>
 <body>
     <script>
-        // 사용자 코드 (정의된 함수를 사용하는 코드이다.)
+        // plugin wrapper 객체 하나가 필요함 복수의 동작을 위해
+        // 요소들을 각각 분리 btn val1 val2 op outcls
+        // 초기화 함수와 함수 실행했을 때 필요한 함수를 호출함
+        // 사용자 코드를 최대한 간결하게 만들어줄수록 좋은 플러그인
         $(document).ready(function(){
-            console.log(22)
             $('.calculator').calCall();
-            console.log(33)
         });
-        // 사용자코드 끝
         
         
-        // 함수 정의 (이부분이 모듈화 영역이라고 생각하면 된다.)
         var app = {};
         (function($){
-            // 생성자 함수
             function CalFunc(target, lastOptions){
                 this.init(target, lastOptions);
                 this.initEvent();
@@ -87,7 +85,6 @@
                 });
             }
         })(jQuery);
-        // 모듈 영역 끝
         
     </script>
     <div id="calculator" class="calculator">
