@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>즉시실행함수 형태로 바꿀때(조금 더 많이 학습된자)03</title>
+    <style>
+      #output {
+          border: 1px solid #000;
+          width: 400px;
+          height: 100px;
+          font-size: 11pt;
+      }
+      input {
+        width:50px;
+      }
+    </style>
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+</head>
+<body>
+    <script>
+        // 사용자 코드 (정의된 함수를 사용하는 코드이다.)
+        $(document).ready(function(){
+            console.log(22)
+            $('.calculator').calCall();
+            console.log(33)
+        });
+        // 사용자코드 끝
+        
+        
+        // 함수 정의 (이부분이 모듈화 영역이라고 생각하면 된다.)
+        var app = {};
+        (function($){
+            // 생성자 함수
+            function CalFunc(target, lastOptions){
+                this.init(target, lastOptions);
+                this.initEvent();
+            }
+            CalFunc.prototype.init = function(target, lastOptions){
+                this.$wrap = $(target);
+                this.$btn = this.$wrap.find(lastOptions.btncls);
+                this.$output = this.$wrap.find(lastOptions.outcls);
+                this.lastOptions = lastOptions;
+                this.set();
+            }
+            CalFunc.prototype.set = function(){
+                this.val1 = this.$wrap.find(this.lastOptions.val1).val()*1;
+                this.val2 = this.$wrap.find(this.lastOptions.val2).val()*1;
+                this.op = this.$wrap.find(this.lastOptions.op).val();
+                this.opt = this.$wrap.find(this.lastOptions.op).find("option:selected").text();
+                return this;         
+            }
+            CalFunc.prototype.initEvent = function(){
+                var _this = this;
+                this.$btn.off('click').on('click', function(){
+                    _this.calCall();
+                })
+            }
+            CalFunc.prototype.calCall = function(){
+                this.set();
+                this.$output.html(" " + this.val1 + " " + this.opt + " " + this.val2 + " = " + this[this.op](this.val1, this.val2));                
+            },
+            CalFunc.prototype.add = function(){
+                return this.val1 + this.val2;
+            },
+            CalFunc.prototype.sub = function(){
+                return this.val1 - this.val2;
+            },
+            CalFunc.prototype.mul = function(){
+                return this.val1 * this.val2;
+            },
+            CalFunc.prototype.div = function(){
+                return this.val1 / this.val2;
+            }
+            
+            $.fn.calCall = function(userOptions){
+                var dftOptions = {
+                    btncls: '.btn',
+                    val1: "input[name='val1']",
+                    val2: "input[name='val2']",
+                    op : "select[name='op']",
+                    outcls : '.output'
+                }
+                var lastOptions = $.extend({}, dftOptions, userOptions || {});
+                
+                return this.each(function(){
+                   new CalFunc(this, lastOptions); 
+                });
+            }
+        })(jQuery);
+        // 모듈 영역 끝
+        
+    </script>
+    <div id="calculator" class="calculator">
+        숫자1:<input name="val1" value='3'>,
+        연산자:
+        <select name="op">
+            <option value="add"> + </option>
+            <option value="sub"> - </option>
+            <option value="mul"> * </option>
+            <option value="div"> / </option>
+        </select>,
+        숫자2:<input name="val2" value="5">
+    <button class="btn">확인</button>
+
+        <div class="output">
+        여기에 결과를 출력 해주세요.
+        </div>
+    </div>
+
+    <div id="calculator" class="calculator">
+        숫자1:<input name="val1" value='4'>,
+        연산자:
+        <select name="op">
+            <option value="add"> + </option>
+            <option value="sub"> - </option>
+            <option value="mul"> * </option>
+            <option value="div"> / </option>
+        </select>,
+        숫자2:<input name="val2" value="2">
+        <button class="btn">확인</button>
+
+        <div class="output">
+        여기에 결과를 출력 해주세요.
+        </div>
+    </div>  
+</body>
+</html>
