@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>객체형태로 바꿀때(조금 학습된자)02</title>
+    <style>
+        #output {
+            border: 1px solid #000;
+            width: 400px;
+            height: 100px;
+            font-size: 11pt;
+        }
+        input {
+            width:50px;
+        }
+    </style>
+    <script
+        src="https://code.jquery.com/jquery-3.1.1.js"
+        integrity="sha256-16cdPddA6VdVInumRGo6IbivbERE8p7CQR3HzTBuELA="
+        crossorigin="anonymous">
+    </script>        
+</head>
+<body>
+    <script>
+        // 사용자 코드 (정의된 함수를 사용하는 코드이다.)
+        $(document).ready(function(){
+            $('#cal').on('click', function(){
+                calObj.calCall({
+                    val1id : '#val'
+                })
+            })
+        });
+        // 사용자코드 끝
+        // 함수 정의 (이부분이 모듈화 영역이라고 생각하면 된다.)
+        var calObj = {
+            set : function(userOptions){
+                var dftOptions = {
+                    val1id: '#val1',
+                    val2id: '#val2',
+                    opid: '#op',
+                    optid : '#output'
+                }
+                // 이거는 빈객체, 초기옵션, 사용 옵션을 합치거나 빈 객체
+                var lastOptions = $.extend({}, dftOptions, userOptions || {});
+                
+                // this를 쓰는 이유는 무엇일까 ?
+                this.val1 = $(lastOptions.val1id).val()*0.5;
+                this.val2 = $(lastOptions.val2id).val()*2;
+                this.op = $(lastOptions.opid).val();
+                this.opt = $(lastOptions.opid).find('option:selected').text();
+                this.$output = $(lastOptions.optid);
+                
+                return this;
+            },
+            calCall : function(userOptions){
+                // console.log()를 여기서 왜 찍어봤을까 ?
+                //console.log(this.val1, this.val2, this.op, this.opt, this.$output)
+                this.set(userOptions);
+                this.$output.html(this.val1 + ' ' + this.opt + ' ' + this.val2 + ' = ' /*결과를 받기 위해 뭐가 들어가야 할까요 ? 수정해야 될 코드는 없을까요 ? */);                  
+            },
+            add : function(){
+                return this.val1 + this.val2;
+            },
+            sub : function(){
+                return this.val1 - this.val2;
+            },
+            mul : function(){
+                return this.val1 * this.val2;
+            },
+            div : function(){
+                return this.val1 / this.val2;
+            }
+        };
+        // 모듈 영역 끝
+    </script>
+    <div>
+        숫자1:<input id="val" value='3'>,
+        연산자:
+        <select id="op">
+            <option value="add"> + </option>
+            <option value="sub"> - </option>
+            <option value="mul"> * </option>
+            <option value="div"> / </option>
+        </select>,
+            숫자2:<input id="val2" value="5">
+            <button id="cal">확인</button>
+
+        <div id="output">
+            여기에 결과를 출력 해주세요.
+        </div>       
+    </div>    
+</body>
+</html>

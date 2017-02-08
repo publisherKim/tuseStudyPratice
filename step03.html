@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>prototype형태로 바꿀때(조금 더 학습된자)03</title>
+    <style>
+        #output {
+            border: 1px solid #000;
+            width: 400px;
+            height: 100px;
+            font-size: 11pt;
+        }
+        input {
+            width:50px;
+        }
+    </style>
+    <script
+        src="https://code.jquery.com/jquery-3.1.1.js"
+        integrity="sha256-16cdPddA6VdVInumRGo6IbivbERE8p7CQR3HzTBuELA="
+        crossorigin="anonymous">
+    </script>        
+</head>
+<body>
+    <script>
+        // 사용자 코드 (정의된 함수를 사용하는 코드이다.)
+        $(document).ready(function(){
+            // 객체 생성 청사진을 실제로 쓸수있게 만드는 과정
+            var realCal = new CalFunc();
+            $('#cal').on('click', function(){
+                // 무엇을 바꺼야 동작할까요 ?
+                realCal.calCall({
+                    val1id : '#val333'
+                })
+            })
+        });
+        // 사용자코드 끝
+        
+        
+        // 함수 정의 (이부분이 모듈화 영역이라고 생각하면 된다.)
+        
+        // 생성자 함수
+        function CalFunc(){
+            
+        }
+        
+        CalFunc.prototype.set = function(userOptions){
+            var dftOptions = {
+                val1id: '#val1',
+                val2id: '#val2',
+                opid: '#op',
+                optid : '#output'
+            }
+            var lastOptions = $.extend({}, dftOptions, userOptions || {});
+
+            // this를 쓰는 이유는 무엇일까 ?
+            this.val1 = $(lastOptions.val1id).val()*1;
+            this.val2 = $(lastOptions.val2id).val()*1;
+            this.op = $(lastOptions.opid).val();
+            this.opt = $(lastOptions.opid).find('option:selected').text();
+            this.$output = $(lastOptions.optid);
+
+            return this;           
+        }
+        CalFunc.prototype.calCall = function(userOptions){
+            this.set(userOptions);
+            this.$output.html(this.val1 + ' ' + this.opt + ' ' + this.val2 + ' = ' + this[this.op](this.val1, this.val2) );                  
+        },
+        CalFunc.prototype.add = function(){
+            return this.val1 + this.val2;
+        },
+        CalFunc.prototype.sub = function(){
+            return this.val1 - this.val2;
+        },
+        CalFunc.prototype.mul = function(){
+            return this.val1 * this.val2;
+        },
+        CalFunc.prototype.div = function(){
+            return this.val1 / this.val2;
+        }
+        // 모듈 영역 끝
+        
+    </script>
+    <div>
+        숫자1:<input id="val" value='3'>,
+        연산자:
+        <select id="op">
+            <option value="add"> + </option>
+            <option value="sub"> - </option>
+            <option value="mul"> * </option>
+            <option value="div"> / </option>
+        </select>,
+            숫자2:<input id="val2" value="5">
+            <button id="cal">확인</button>
+
+        <div id="output">
+            여기에 결과를 출력 해주세요.
+        </div>       
+    </div>    
+</body>
+</html>
