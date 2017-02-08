@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>es6 class형태 + 블럭스코프08</title>
+    <style>
+      #output {
+          border: 1px solid #000;
+          width: 400px;
+          height: 100px;
+          font-size: 11pt;
+      }
+      input {
+        width:50px;
+      }
+    </style>
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+</head>
+<body>
+    <script>
+        // es6
+        $(document).ready(function(){
+            $('#cal').on('click', function(){
+               app.caculatorObj.calCall({
+                  val1id : '#val' 
+               }); 
+            });
+        });
+        
+        // 더 별거 없다. 블록 범위 지정해주고 빈객체에 이름 써서 new className() 할당해주면 끝
+        let app = {};
+        {
+            class className{
+                set(userOptions){
+                    let dftOptions = {
+                        val1id : '#val1',
+                        val2id : '#val2',
+                        opid : '#op',
+                        outid : '#output'
+                    };
+
+                    let options = $.extend({}, dftOptions, userOptions || {});
+
+                    this.val1 = $(options.val1id).val()*1;
+                    this.val2 = $(options.val1id).val()*2;
+                    this.op = $(options.opid).val();
+                    this.opt = $(options.opid).find("option:selected").text();
+                    this.$output = $(options.outid);
+                    return this;                
+                };
+
+                calCall(userOptions){
+                    this.set(userOptions);
+                    this.$output.html( this.val1 + " " + this.opt + " " + this.val2 + " = " + this[this.op](this.val1, this.val2) )
+                };
+                add(){
+                    return this.val1 + this.val2;
+                };
+                sub(){
+                    return this.val1 - this.val2;
+                };
+                mul(){
+                    return this.val1 * this.val2;
+                };
+                div(){
+                    return this.val1 / this.val2;
+                };            
+            }
+            // new 함수가 하는일을 까먹었다... ㅠㅠㅠㅠ
+            app.caculatorObj = new className();
+        }
+    </script>
+    <div>
+        숫자1:<input id="val" value='3'>,
+        연산자:
+        <select id="op">
+            <option value="add"> + </option>
+            <option value="sub"> - </option>
+            <option value="mul"> * </option>
+            <option value="div"> / </option>
+        </select>,
+        숫자2:<input id="val2" value="5">
+        <button id="cal">확인</button>
+
+        <div id="output">
+            여기에 결과를 출력 해주세요.
+        </div>
+    </div> 
+</body>
+</html>
