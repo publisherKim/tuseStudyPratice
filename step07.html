@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>es6 class형태07</title>
+    <style>
+      #output {
+          border: 1px solid #000;
+          width: 400px;
+          height: 100px;
+          font-size: 11pt;
+      }
+      input {
+        width:50px;
+      }
+    </style>
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+</head>
+<body>
+    <script>
+        // es6
+        $(document).ready(function(){
+            var es6Class = new className();
+            $('#cal').on('click', function(){
+               es6Class.calCall({
+                  val1id : '#val' 
+               }); 
+            });
+        });
+        
+        // 별것 없다 클래스 블록스코프 범위안에 똑같다. 프로토탑입 같은걸 쓸필요 없으니 코드가 간략해졌다 정도.. 
+        class className{
+            set(userOptions){
+                let dftOptions = {
+                    val1id : '#val1',
+                    val2id : '#val2',
+                    opid : '#op',
+                    outid : '#output'
+                };
+
+                let options = $.extend({}, dftOptions, userOptions || {});
+
+                this.val1 = $(options.val1id).val()*1;
+                this.val2 = $(options.val1id).val()*2;
+                this.op = $(options.opid).val();
+                this.opt = $(options.opid).find("option:selected").text();
+                this.$output = $(options.outid);
+                return this;                
+            };
+            
+            calCall(userOptions){
+                this.set(userOptions);
+                this.$output.html( this.val1 + " " + this.opt + " " + this.val2 + " = " + this[this.op](this.val1, this.val2) )
+            };
+            add(){
+                return this.val1 + this.val2;
+            };
+            sub(){
+                return this.val1 - this.val2;
+            };
+            mul(){
+                return this.val1 * this.val2;
+            };
+            div(){
+                return this.val1 / this.val2;
+            };            
+        }
+    </script>
+    <div>
+        숫자1:<input id="val" value='3'>,
+        연산자:
+        <select id="op">
+            <option value="add"> + </option>
+            <option value="sub"> - </option>
+            <option value="mul"> * </option>
+            <option value="div"> / </option>
+        </select>,
+        숫자2:<input id="val2" value="5">
+        <button id="cal">확인</button>
+
+        <div id="output">
+            여기에 결과를 출력 해주세요.
+        </div>
+    </div> 
+</body>
+</html>
