@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>es6 class형태 + 블럭스코프 + plugin 09</title>
+    <style>
+      #output {
+          border: 1px solid #000;
+          width: 400px;
+          height: 100px;
+          font-size: 11pt;
+      }
+      input {
+        width:50px;
+      }
+    </style>
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+</head>
+<body>
+    <script>
+        // es6 plugin 형태 + options 값 받아서 기능 추가하기
+        $(document).ready(function() {
+            $(".calculator").calCall({
+                onok : (o) => {
+                    console.log(o.val1 + o.opt + o.val2 + " 가 처리됨.")
+                }
+            }).test1().test2().test3();
+        });
+        
+        {
+            let $ = jQuery;
+            
+            class className{
+                // 생성자 함수지 뭐
+                // 기본적으로 jquery는 돔의 최상층에서 시작하는 쪽으로 시작하는게 좋다는데 이건 왜 그런지는 추가 공부가 필요할듯 결국 이것도 유효범위 때문인것 같긴한데 명확하게 정리는 안된다.
+                constructor(target, options){
+                    this.init(target, options);
+                    this.initEvent();
+                }
+                init(target, options){
+                    this.$wrap = $(target);
+                    this.$btn = this.$wrap.find(options.btncls);
+                    this.$output = this.$wrap.find(options.outcls);
+                    this.options = options;
+                    this.set();
+                }
+                set(){
+                    this.val1 = this.$wrap.find(this.options.val1).val()*1;
+                    this.val2 = this.$wrap.find(this.options.val2).val()*1;
+                    this.op = this.$wrap.find(this.options.op).val();
+                    this.opt = this.$wrap.find(this.options.op).find("option:selected").text();
+                    return this;               
+                };
+                initEvent(){
+                    let _this = this;
+                    this.$btn.off('click').on('click', function(){
+                       _this.calCall(); 
+                    });
+                }
+                calCall(userOptions){
+                    this.set();
+                    this.$output.html( this.val1 + " " + this.opt + " " + this.val2 + " = " + this[this.op](this.val1, this.val2) )
+                };
+                add(){
+                    return this.val1 + this.val2;
+                };
+                sub(){
+                    return this.val1 - this.val2;
+                };
+                mul(){
+                    return this.val1 * this.val2;
+                };
+                div(){
+                    return this.val1 / this.val2;
+                };            
+            }
+            
+            // plugin 을 쓰기위해서 .prototype 같은 형태의 문법을 쓸수밖에 없었다.
+            $.fn.calCall = function(userOptions){
+                let dftOptions = {
+                    btncls : ".btn",
+                    val1 : "input[name='val1']",
+                    val2 : "input[name='val2']",
+                    op : "select[name='op']",
+                    outcls : ".output",
+                    onok : ()=>{}
+                };
+                let options = $.extend({}, dftOptions, userOptions || {});
+                
+                // method chaing 을 추가해주었다 
+                let plugin = {
+                    test1(){
+                        console.log('test1');
+                        return this;
+                    },
+                    test2(){
+                        console.log('test2');
+                        return this;                        
+                    },
+                    test3(){
+                        console.log('test3');
+                        return this;                           
+                    }
+                };
+                $.extend(this, plugin)
+                
+                return this.each(function(){
+                    new className(this, options);
+                });
+            };
+        }
+    </script>
+    
+    <div id="calculator" class="calculator">
+        숫자1:<input name="val1" value='3'>,
+        연산자:
+        <select name="op">
+            <option value="add"> + </option>
+            <option value="sub"> - </option>
+            <option value="mul"> * </option>
+            <option value="div"> / </option>
+        </select>,
+        숫자2:<input name="val2" value="5">
+        <button class="btn">확인</button>
+
+        <div class="output">
+            여기에 결과를 출력 해주세요.
+        </div>
+    </div>
+
+    <div id="calculator" class="calculator">
+        숫자1:<input name="val1" value='4'>,
+        연산자:
+        <select name="op">
+            <option value="add"> + </option>
+            <option value="sub"> - </option>
+            <option value="mul"> * </option>
+            <option value="div"> / </option>
+        </select>,
+        숫자2:<input name="val2" value="2">
+        <button class="btn">확인</button>
+
+        <div class="output">
+            여기에 결과를 출력 해주세요.
+        </div>
+    </div> 
+</body>
+</html>
