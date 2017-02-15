@@ -1,0 +1,130 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title> </title>
+
+    <style>
+        body {
+            font-size: 9pt;
+        }
+        
+        div.image-container {
+            position: relative;
+            border: 1px solid #000;
+            height: 600px;
+        }
+        
+        div.image-container img {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 120px;
+            border: solid 1px #ccc;
+        }
+    </style>
+
+
+
+    <script src="https://code.jquery.com/jquery-3.1.1.js"></script>
+    <script>
+        $(document).ready(function() {
+            var $images2 = $("#container2 img");
+            objectPattern.showGallery({
+                imgsid: '#container1 img',
+                count: 2
+            });
+            objectPattern.showGallery({
+                $images: $images2,
+                width: 100,
+                height: 100,
+                oncomplete: function() {
+                    console.log("gallery completed!!!");
+                }
+            });
+        });
+        // es6 객체 형태로 바꾸기
+        /*
+        	var o = {
+        		init : function(){}  is same to down
+        		init(){
+
+        		}
+        	}
+        	var -> let 
+					function name(){} -> name(){}
+					arrow의 메서드의 경우 this binding이 안되니 애로우로 바꺼야 하는지 판단이 안선당!!
+        */
+        var objectPattern = {
+            init(userOptions) {
+                let dftOptions = {
+                    imgsid: '',
+                    $images: null,
+                    count: 4,
+                    width: 150,
+                    height: 150,
+                    oncomplete: () => {
+                        console.log('gallerycomplete');
+                    }
+                }
+                this.s = $.extend({}, dftOptions, userOptions || {});
+            },
+            validate() {
+                if (this.s.imgsid) {
+                    if (this.s.$images) {
+                        this.s.$images.siblings(".tmpl").remove();
+                        this.s.$images.parent().append($(this.s.imgsid).addClass("tmpl"));
+                    } else {
+                        this.s.$images = $(this.s.imgsid);
+                    }
+                }
+            },
+            showGallery(userOptions) {
+                this.init(userOptions);
+                this.validate();
+                var s = this.s;
+                var length = s.$images.length;
+                for (var i = 0; i < length; i++) {
+                    var $img = s.$images.eq(i);
+                    var x = 100 + ((i % s.count) * s.width);
+                    var y = 100 + (parseInt(i / s.count) * s.height);
+                    $img.css({
+                        left: x,
+                        top: y
+                    });
+                }
+                s.oncomplete();
+            }
+        }
+    </script>
+</head>
+
+<body>
+    <p>container1</p>
+    <div class="image-container" id="container1">
+
+        <img src="banners/1.png">
+        <img src="banners/2.png">
+        <img src="banners/3.png">
+        <img src="banners/4.png">
+        <img src="banners/5.png">
+        <img src="banners/6.png">
+        <img src="banners/7.png">
+        <img src="banners/8.png">
+    </div>
+    <p>container2</p>
+
+    <div class="image-container" id="container2">
+        <img src="banners/1.png">
+        <img src="banners/2.png">
+        <img src="banners/3.png">
+        <img src="banners/4.png">
+        <img src="banners/5.png">
+        <img src="banners/6.png">
+        <img src="banners/7.png">
+        <img src="banners/8.png">
+    </div>
+</body>
+
+</html>

@@ -31,7 +31,10 @@
     <script>
         $(document).ready(function() {
             var $images2 = $("#container2 img");
-
+            instance.show({
+                imgsid: '#container1 img',
+                count: 3
+            });
             instance.showAni({
                 $images: $images2,
                 width: 100,
@@ -97,7 +100,6 @@
             // 여기게 주목 validate가 true일때 그냥 그림
             if (this.validate()) {
                 this.draw();
-                s.oncomplete();
             }
         };
         ProtoFunc.prototype.showAni = function(userOptions) {
@@ -107,13 +109,9 @@
                 // 호옹이!!!
                 this.s.method = 'animate';
                 this.draw();
-                s.oncomplete();
             };
         };
-        var instance = new ProtoFunc({
-            imgsid: '#container1 img',
-            count: 5
-        });
+        var instance = new ProtoFunc();
     </script>
 </head>
 
