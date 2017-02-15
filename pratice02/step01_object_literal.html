@@ -1,0 +1,134 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title> </title>
+
+    <style>
+        body {
+            font-size: 9pt;
+        }
+        
+        div.image-container {
+            position: relative;
+            border: 1px solid #000;
+            height: 600px;
+        }
+        
+        div.image-container img {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 120px;
+            border: solid 1px #ccc;
+        }
+    </style>
+
+
+
+    <script src="https://code.jquery.com/jquery-3.1.1.js"></script>
+    <script>
+        $(document).ready(function() {
+            // 이미지  찾기
+            var $images2 = $("#container2 img");
+            // 이미지 배열 하기
+            objectPattern.showGallery({
+                imgsid: '#container1 img',
+                count: 6
+            });
+            objectPattern.showGallery({
+                $images: $images2,
+                width: 100,
+                height: 100,
+                oncomplete: function() {
+                    console.log("gallery completed!!!");
+                }
+            });
+        });
+        // 의식의 흐름되로 짠 예제를 객체의 옵션처리 해주고(초기화), validate, showgallery 로직을추가하고 나눔 객체 방법으로 바꾸는건 덤
+        var objectPattern = {
+                // 초기화함수
+                init: function(userOptions) {
+                    //기본 옵션값
+                    var dftOptions = {
+                            imgsid: '',
+                            $images: null,
+                            count: 4,
+                            width: 150,
+                            height: 150,
+                            oncomplete: function() {
+                                console.log('gallerycomplete');
+                            }
+                        }
+                        // 옵션값 확장 userOptions 이라는 말은 사용자 옵션이라는 뜻.
+                    this.s = $.extend({}, dftOptions, userOptions || {});
+                },
+                // 덩어리로 있던 로직에서 유효성을 검사하는 함수를 따로 분리함.
+                validate: function(s) {
+                    console.log(s);
+                    if (this.s.imgsid) {
+                        if (this.s.$images) {
+                            this.s.$images.siblings(".tmpl").remove();
+                            this.s.$images.parent().append($(this.s.imgsid).addClass("tmpl"));
+                        } else {
+                            this.s.$images = $(this.s.imgsid);
+                        }
+                    }
+                },
+                // 그림을 그려주는 함수 역시 따로 분리함.
+                showGallery: function(userOptions) {
+                    this.init(userOptions);
+                    this.validate();
+                    var s = this.s;
+                    var length = s.$images.length;
+                    // 이미지 배열하기.
+                    for (var i = 0; i < length; i++) {
+                        // n번째 이미지 구하기
+                        var $img = s.$images.eq(i);
+                        // 위치 값 구하기
+                        var x = 100 + ((i % s.count) * s.width);
+                        var y = 100 + (parseInt(i / s.count) * s.height);
+                        // 위치 설정
+                        $img.css({
+                            left: x,
+                            top: y
+                        });
+                    }
+                    // 사용자 옵션 콜백함수로 기능이 작동 함을 알려주는 함수를 만듬 위에 있음 여기선 사용
+                    s.oncomplete();
+                }
+            }
+            // 즉 이 방법을 터득하면 나머지 프로토타입, 즉시실행함수 및 플러그인 es6 들은 패턴 익히면 끝남.
+            // 결국 중요한건 원리 개념 객체를 쓰고 왜 로직을 기능별로 분류해야하나 옵션을 설정해주는 이유와 이런것들에 대해서 학습해야함.
+    </script>
+</head>
+
+<body>
+    <p>container1</p>
+    <div class="image-container" id="container1">
+
+        <img src="banners/1.png">
+        <img src="banners/2.png">
+        <img src="banners/3.png">
+        <img src="banners/4.png">
+        <img src="banners/5.png">
+        <img src="banners/6.png">
+        <img src="banners/7.png">
+        <img src="banners/8.png">
+    </div>
+    <p>container2</p>
+
+    <div class="image-container" id="container2">
+        <img src="banners/1.png">
+        <img src="banners/2.png">
+        <img src="banners/3.png">
+        <img src="banners/4.png">
+        <img src="banners/5.png">
+        <img src="banners/6.png">
+        <img src="banners/7.png">
+        <img src="banners/8.png">
+    </div>
+</body>
+
+</html>

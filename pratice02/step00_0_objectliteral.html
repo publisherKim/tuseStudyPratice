@@ -1,0 +1,93 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title> </title>
+
+    <style>
+        body {
+            font-size: 9pt;
+        }
+        
+        div.image-container {
+            position: relative;
+            border: 1px solid #000;
+            height: 600px;
+        }
+        
+        div.image-container img {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 120px;
+        }
+    </style>
+
+
+
+    <script src="https://code.jquery.com/jquery-3.1.1.js" integrity="sha256-16cdPddA6VdVInumRGo6IbivbERE8p7CQR3HzTBuELA=" crossorigin="anonymous">
+    </script>
+    <script>
+        /*
+                    미션 03: 심플 갤러리를 클래스로 만들기
+                    함수 단위 코딩으로 만들어진 심플 갤러리를 프로토타입 클래스로 만들어 주세요.
+                */
+        $(document).ready(function() {
+            // 이미지  찾기
+            var $images1 = $("#container1 img");
+            var $images2 = $("#container2 img");
+            // 이미지 배열 하기
+            o.showGallery($images1, 6, 150, 150);
+            o.showGallery($images2, 4, 200, 200);
+        });
+        //이미지 배열하기
+        var o = {
+            showGallery: function($images, count, width, height) {
+                var length = $images.length;
+                // 이미지 배열하기.
+                for (var i = 0; i < length; i++) {
+                    // n번째 이미지 구하기
+                    var $img = $images.eq(i);
+                    // 위치 값 구하기
+                    var x = 100 + ((i % count) * width);
+                    var y = 100 + (parseInt(i / count) * height);
+                    // 위치 설정
+                    $img.css({
+                        left: x,
+                        top: y
+                    });
+                }
+            }
+        }
+    </script>
+</head>
+
+<body>
+    <p>container1</p>
+    <div class="image-container" id="container1">
+
+        <img src="banners/1.png">
+        <img src="banners/2.png">
+        <img src="banners/3.png">
+        <img src="banners/4.png">
+        <img src="banners/5.png">
+        <img src="banners/6.png">
+        <img src="banners/7.png">
+        <img src="banners/8.png">
+    </div>
+    <p>container2</p>
+
+    <div class="image-container" id="container2">
+        <img src="banners/1.png">
+        <img src="banners/2.png">
+        <img src="banners/3.png">
+        <img src="banners/4.png">
+        <img src="banners/5.png">
+        <img src="banners/6.png">
+        <img src="banners/7.png">
+        <img src="banners/8.png">
+    </div>
+</body>
+
+</html>
