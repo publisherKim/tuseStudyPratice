@@ -1,0 +1,156 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title> </title>
+
+    <style>
+        body {
+            font-size: 9pt;
+        }
+        
+        div.image-container {
+            position: relative;
+            border: 1px solid #000;
+            height: 600px;
+        }
+        
+        div.image-container img {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 120px;
+            border: solid 1px #ccc;
+        }
+    </style>
+
+
+
+    <script src="https://code.jquery.com/jquery-3.1.1.js"></script>
+    <script>
+        $(document).ready(function() {
+            var $images2 = $("#container2 img");
+
+            //4. show 호출코드 추가해주고 변수 타고 들어가는거 바꿔주면 끝
+            app.instance.show({
+                imgsid: '#container1 img',
+                count: 5
+            });
+            app.instance.showAni({
+                $images: $images2,
+                width: 100,
+                height: 100,
+                oncomplete: function() {
+                    console.log("gallery completed2!!!");
+                }
+            });
+        });
+        // 0.즉시 실행함수 껌이징 ㅋㅋㅋ
+        /*
+        var app = {} || {};
+        (function(app){
+
+        })(app);
+        */
+        var app = {} || {};
+        (function(app) {
+            function ProtoFunc(userOptions) {
+                // 1.기본으로 show를 실행시켜주장 inti validator동작할테공
+                this.show(userOptions);
+            }
+            ProtoFunc.prototype.init = function(userOptions) {
+                //method 추가 
+                var dftOptions = {
+                    imgsid: '',
+                    $images: null,
+                    count: 4,
+                    width: 150,
+                    height: 150,
+                    method: 'css',
+                    oncomplete: function() {
+                        console.log('gallerycomplete');
+                    }
+                }
+                this.s = $.extend({}, dftOptions, userOptions || {});
+            };
+            ProtoFunc.prototype.validate = function() {
+                var s = this.s;
+                var result = true;
+                console.log(s);
+                if (s.imgsid) {
+                    if (s.$images) {
+                        s.$images.siblings(".tmpl").remove();
+                        s.$images.parent().append($(s.imgsid).addClass("tmpl"));
+                    } else {
+                        s.$images = $(s.imgsid);
+                    }
+                }
+                if (!s.$images) result = false;
+
+                return result;
+            };
+            ProtoFunc.prototype.draw = function() {
+                var s = this.s;
+                var length = s.$images.length;
+                for (var i = 0; i < length; i++) {
+                    var $img = s.$images.eq(i);
+                    var x = 100 + ((i % s.count) * s.width);
+                    var y = 100 + (parseInt(i / s.count) * s.height);
+                    $img[s.method]({
+                        left: x,
+                        top: y
+                    }, 2000);
+                }
+            }
+            ProtoFunc.prototype.show = function(userOptions) {
+                var s = this.s;
+                this.init(userOptions);
+                if (this.validate()) {
+                    this.draw();
+                    s.oncomplete();
+                }
+            };
+            ProtoFunc.prototype.showAni = function(userOptions) {
+                this.init(userOptions);
+
+                if (this.validate()) {
+                    this.s.method = 'animate';
+                    this.draw();
+                    s.oncomplete();
+                };
+            };
+            // 3.인스턴스에 담는 호출 코드 바뀔테고
+            app.instance = new ProtoFunc();
+        })(app);
+    </script>
+</head>
+
+<body>
+    <p>container1</p>
+    <div class="image-container" id="container1">
+
+        <img src="banners/1.png">
+        <img src="banners/2.png">
+        <img src="banners/3.png">
+        <img src="banners/4.png">
+        <img src="banners/5.png">
+        <img src="banners/6.png">
+        <img src="banners/7.png">
+        <img src="banners/8.png">
+    </div>
+    <p>container2</p>
+
+    <div class="image-container" id="container2">
+        <img src="banners/1.png">
+        <img src="banners/2.png">
+        <img src="banners/3.png">
+        <img src="banners/4.png">
+        <img src="banners/5.png">
+        <img src="banners/6.png">
+        <img src="banners/7.png">
+        <img src="banners/8.png">
+    </div>
+</body>
+
+</html>
