@@ -1,0 +1,150 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title> </title>
+
+    <style>
+        body {
+            font-size: 9pt;
+        }
+        
+        div.image-wrap {
+            position: relative;
+            border: 1px solid #000;
+            height: 600px;
+        }
+        
+        div.image-wrap .image-item {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 120px;
+        }
+        
+        div.image-container .image-item img {
+            max-width: 100%;
+        }
+    </style>
+
+
+
+    <script src="https://code.jquery.com/jquery-3.1.1.js"></script>
+    </script>
+    <script>
+        /*
+                            미션 03: 심플 갤러리를 클래스로 만들기
+                            함수 단위 코딩으로 만들어진 심플 갤러리를 프로토타입 클래스로 만들어 주세요.
+                        */
+        $(document).ready(function() {
+            // 이미지  찾기
+            $("#container1").gallery({
+                count: 5
+            });
+            $("#container2").gallery({
+                width: 100,
+                height: 100,
+                oncomplete: function() {
+                    console.log("gallery completed!!!");
+                }
+            });
+        });
+        ////////////////////////////////////////////////////////////////
+        (function($) {
+            function Gallery(wrapper, userOptions) {
+                this.$wrapper = $(wrapper);
+                this.show(userOptions);
+            }
+            Gallery.prototype.init = function(userOptions) {
+                var dftOptions = {
+                    $images: this.$wrapper.find(".image-item"),
+                    method: 'css',
+                    count: 4,
+                    width: 200,
+                    height: 200,
+                    oncomplete: function() {}
+                };
+                this.s = $.extend({}, dftOptions, userOptions || {});
+            };
+            Gallery.prototype.validator = function() {
+                var s = this.s;
+                var result = true;
+                if (s.$images) {
+                    //
+                } else {
+                    result = false;
+                }
+                return result;
+            };
+            Gallery.prototype.draw = function() {
+                var s = this.s;
+                // 이미지 개수 구하기.
+                var length = s.$images.length;
+                // 이미지 배열하기.
+                for (var i = 0; i < length; i++) {
+                    // n번째 이미지 구하기
+                    var $img = s.$images.eq(i);
+                    // 위치 값 구하기
+                    var x = 100 + ((i % s.count) * s.width);
+                    var y = 100 + (parseInt(i / s.count) * s.height);
+                    // 위치 설정
+                    $img[s.method]({
+                        left: x,
+                        top: y
+                    });
+                }
+                s.oncomplete();
+            };
+            Gallery.prototype.show = function(userOptions) {
+                var s = this.s;
+                this.init(userOptions);
+                if (this.validator()) {
+                    this.draw();
+                }
+            };
+            Gallery.prototype.showAni = function(userOptions) {
+                var s = this.s;
+                this.init(userOptions);
+                if (this.validator()) {
+                    this.s.method = "animate";
+                    this.draw();
+                }
+            };
+            $.fn.gallery = function(userOptions) {
+                return this.each(function() {
+                    new Gallery(this, userOptions);
+                });
+            };
+        })(jQuery);
+    </script>
+</head>
+
+<body>
+    <p>container1</p>
+    <div class="image-container image-wrap" id="container1">
+
+        <div class="image-item"><img src="banners/1.png"></div>
+        <div class="image-item"><img src="banners/2.png"></div>
+        <div class="image-item"><img src="banners/3.png"></div>
+        <div class="image-item"><img src="banners/4.png"></div>
+        <div class="image-item"><img src="banners/5.png"></div>
+        <div class="image-item"><img src="banners/6.png"></div>
+        <div class="image-item"><img src="banners/7.png"></div>
+        <div class="image-item"><img src="banners/8.png"></div>
+    </div>
+    <p>container2</p>
+
+    <div class="image-container image-wrap" id="container2">
+        <div class="image-item"><img src="banners/1.png"></div>
+        <div class="image-item"><img src="banners/2.png"></div>
+        <div class="image-item"><img src="banners/3.png"></div>
+        <div class="image-item"><img src="banners/4.png"></div>
+        <div class="image-item"><img src="banners/5.png"></div>
+        <div class="image-item"><img src="banners/6.png"></div>
+        <div class="image-item"><img src="banners/7.png"></div>
+        <div class="image-item"><img src="banners/8.png"></div>
+    </div>
+</body>
+
+</html>
